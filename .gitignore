@@ -5,6 +5,8 @@
 /test-result
 /logs
 /precompiled
+/db
+/war
 .classpath
 .project
 .settings/*
