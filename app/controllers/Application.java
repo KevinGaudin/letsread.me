@@ -202,8 +202,9 @@ public class Application extends BookHelper {
         } else {
             // Send the authentication request. For Google, we ask for the user
             // email, firstname and lastname. These 3 fields may vary for other
-            // openID providers. The email is used by letsread.me as the user
-            // ID.
+            // openID providers. The email is the most reliable ID as the unique
+            // ID provided in the authentication result varies depending on the
+            // referring site.
             OpenID oi = OpenID.id(opurl).required("email", "http://axschema.org/contact/email")
                     .required("firstname", "http://axschema.org/namePerson/first")
                     .required("lastname", "http://axschema.org/namePerson/last");

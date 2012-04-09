@@ -1,3 +1,21 @@
+/**
+ * Copyright 2011, 2012 Kevin Gaudin
+ *
+ * This file is part of letsread.me.
+ *
+ * letsread.me is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * letsread.me is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with letsread.me.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package helpers;
 
 import java.io.ByteArrayInputStream;
@@ -32,8 +50,25 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
 
+/**
+ * Contains all the logic about creating an ebook from an RSS DOM Document.
+ * Extends Controller for an easier integration in the Application controller.
+ */
 public class BookHelper extends Controller {
 
+    /**
+     * Renders the feed as an ebook in a ByteArray and returns this data as a
+     * stream.
+     * 
+     * @param feedUrl
+     *            The URL of the book.
+     * @param doc
+     *            The DOM Document retrieved from the feed URL
+     * @return An InputStream providing the binary data of the rendered ebook.
+     * @throws IllegalArgumentException
+     * @throws FeedException
+     * @throws IOException
+     */
     protected static InputStream renderBook(URL feedUrl, Document doc) throws IllegalArgumentException, FeedException,
             IOException {
 
@@ -58,6 +93,19 @@ public class BookHelper extends Controller {
         return null;
     }
 
+    /**
+     * Generate an ebook from an RSS DOM Document.
+     * 
+     * @param url
+     *            The URL from where the Document was fetched (used only to set
+     *            the author metadata)
+     * @param doc
+     *            The DOM Document of the feed.
+     * @return An ebook.
+     * @throws IllegalArgumentException
+     * @throws FeedException
+     * @throws IOException
+     */
     private static Book createBookFromFeed(URL url, Document doc) throws IllegalArgumentException, FeedException,
             IOException {
         Book book = new Book();
@@ -89,7 +137,7 @@ public class BookHelper extends Controller {
             book.getMetadata().getRights().add(feed.getCopyright());
         }
 
-        // Set cover image
+        // Set cover image - This has never worked.
         // if (feed.getImage() != null) {
         // System.out.println("There is an image for the feed");
 
@@ -173,22 +221,32 @@ public class BookHelper extends Controller {
         return book;
     }
 
+    /**
+     * Get rid of some data which have caused parsing/rendering issues.
+     * 
+     * @param content
+     * @return
+     */
     private static String clean(String content) {
         // XHTML tags we don't want to keep
         String stripTags = "(" + "<(img|IMG).*?/>" // images (self closed)
-                + "|" + "<(img|IMG).*?>.*?</(img|IMG)>"
-                + "|" + "<(script|SCRIPT).*?>.*?</(script|SCRIPT)>" // scripts
+                + "|" + "<(img|IMG).*?>.*?</(img|IMG)>" + "|" + "<(script|SCRIPT).*?>.*?</(script|SCRIPT)>" // scripts
                 + "|" + "<(object|OBJECT).*?>.*?</(object|OBJECT)>" // objects
-                + ")"
-        ;
-        // Strip images
+                + ")";
+
+        // Wrap content in an XHTML header
         content = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\"?>"
                 + "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" \"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\"> "
-                + "<html xmlns=\"http://www.w3.org/1999/xhtml\">"
-                + "<head></head><body>"
-                + content.replaceAll("<[aA].*?>(.*?)</[aA]>", "$1")
-                .replaceAll(stripTags, " ")
-                .replaceAll("</[aA]>", "") // Some unclosed link tags have been found in a Mashable RSS feed...
+                + "<html xmlns=\"http://www.w3.org/1999/xhtml\">" + "<head></head><body>"
+                + content.replaceAll("<[aA].*?>(.*?)</[aA]>", "$1") // Strip
+                                                                    // links but
+                                                                    // keep
+                                                                    // their
+                                                                    // content
+                        .replaceAll(stripTags, " ") // remove unwanted elements
+                        .replaceAll("</[aA]>", "") // Some unclosed link tags
+                                                   // have been found in a
+                                                   // Mashable RSS feed...
                 + "</body></html>";
         return content;
     }
