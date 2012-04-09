@@ -1,0 +1,11 @@
+#experiment {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 15000;
+}
+
+.page-header img {
+	float: right;
+	width: 100px;
+}

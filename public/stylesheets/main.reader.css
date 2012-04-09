@@ -1,0 +1,7 @@
+.container {
+    width: 570px;
+}
+
+p, h3, .btn, td, ul, li {
+	font-size: 16px;
+}

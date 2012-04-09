@@ -1,0 +1,20 @@
+#{extends 'main.html' /}
+#{set title:'Authentication' /}
+<div class="well">
+<h2>Please authenticate with openId</h1>
+
+#{if flash.error}
+<h3>${flash.error}</h1>
+#{/if}
+ 
+<form action="@{Application.authenticate()}" method="POST">
+    <label for="user">What's your OpenID?</label>
+    <input type="text" name="opurl" id="opurl" />
+    <input type="submit" value="login" />
+</form>
+<form action="@{Application.authenticate()}" method="POST">
+    <input type="hidden" name="opurl" id="opurl" value="https://www.google.com/accounts/o8/id"/>
+    <input type="submit" value="login with Google" />
+</form>
+
+</div>

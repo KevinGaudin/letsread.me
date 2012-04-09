@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="${_response_encoding}">
+<title>#{get 'title' /}</title>
+<meta name="description" content="">
+<meta name="author" content="">
+
+<!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+<!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <link rel="stylesheet"
+    href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+    #{stylesheet 'bootstrap-additional.css' /}
+    #{stylesheet 'main.css' /}
+    #{if reader}
+        #{stylesheet 'main.reader.css' /}
+    #{/if}<style type="text/css">
+body {
+	padding-top: 60px;
+}
+</style>
+
+<!-- Le fav and touch icons -->
+<link rel="shortcut icon" type="image/png"
+	href="@{'/public/images/favicon.png'}">
+<link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+<link rel="apple-touch-icon" sizes="72x72"
+	href="@{'/public/images/touch72.png'}">
+<link rel="apple-touch-icon" sizes="114x114"
+	href="@{'/public/images/touch114.png'}">
+<script src="@{'/public/javascripts/jquery-1.6.4.min.js'}"
+	type="text/javascript" charset="${_response_encoding}"></script>
+#{get 'moreScripts' /}
+</head>
+<body>
+    <img src="/public/images/experiment.png" alt="experiment" id="experiment" />
+	<div class="topbar">
+		<div class="fill">
+			<div class="container">
+				<a class="brand" href="#">LetsRead.me</a>
+				<ul class="nav">
+					<li class="active">#{a @Application.index()}Home#{/a}</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+		<div class="content">
+			<div class="page-header">
+                <img src="/public/images/logo100.png" alt="logo"/>
+			
+				<h1>Let's read...</h1>
+                #{if session.user}
+                    <p>#{a @Application.logout(), class: 'btn small primary'}logout#{/a}
+                    <strong>Welcome ${session.firstname} ${session.lastname}</strong></p>
+                #{/if}#{else}
+                    #{a @Application.authenticate("https://www.google.com/accounts/o8/id"), class: 'btn small primary'}login with Google#{/a}
+                #{/else}
+				<h3>Take your favorite websites on your e-Reader while traveling.</h3>
+				<p>Just login with your Google account, add a few feeds, and get a direct link to get your feeds as ePub books.</p>
+				<p>You can as well go to http://letsread.me with your e-reader browser and directly get your ePub feeds downloaded.</p>
+				<p class="alert-message info">The service has been developed with Chrome and Kobo Touch and is barely tested. This is just an idea quickly developed as a proof of concept. <a href="https://plus.google.com/116502618562586400530">Please let me know</a> if you want it to go further.</p>
+				
+			</div>
+	
+			#{doLayout /}
+		</div>
+	
+		<div class="well">
+			<div class="row">
+			     <div class="span6 offset4">
+				     #{gplus /}
+				 </div>
+			</div>
+		</div>
+		<footer>
+				<p>&copy; Kevin Gaudin 2011</p>
+		</footer>
+	</div>
+	
+</body>
+</html>

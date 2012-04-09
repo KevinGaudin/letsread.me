@@ -1,0 +1,84 @@
+#{extends 'main.html' /}
+#{set title:'Home' /}
+<div class="row">
+<div class="span14">
+	#{if session.user}
+				
+	    <h3>
+			${feeds.size() ?: 'no'} 
+	        feed${feeds.size().pluralize()}
+	    </h3>
+		#{form @Application.addFeedToUser()}
+	    <table>
+	    <thead>
+	    	<tr>
+              <th>Actions</th>
+	    	  <th>Title</th>
+	    	  <th>Feed Url</th>
+	    	</tr>
+	    </thead>
+		#{list items:feeds, as:'feed'}
+			<tr>
+                <td>
+                    #{a @Application.deleteFeed(feed.url), class:'btn danger'}-#{/a}
+                    #{a @Application.download(feed.title), class:'btn success'}epub#{/a}
+                </td>
+				<td>${feed.title}</td>
+				<td>${feed.url}</td>
+			</tr>
+		#{/list}
+		#{if feeds.size() < 5}
+			<tr>
+                <td><input type="submit" value="add" class="btn primary"/></td>
+				<td>
+					#{field 'feedtitle'}
+					  <input type="text" id="${field.id}" name="${field.name}" value="${field.value}" class="${field.errorClass}">
+					  <span class="error">${field.error}</span>
+					#{/}
+				</td>
+				<td>
+					#{field 'feedurl'}
+					  <input type="text" id="${field.id}" name="${field.name}" value="${field.value}" class="xlarge ${field.errorClass}">
+					  <span class="error">${field.error}</span>
+					#{/}
+				</td>
+			</tr>
+		#{/if}#{else}
+		    <tr>
+		        <td colspan="3"><div class="alert-message warning" ><p>For this experiment phase, <strong>each user is limited to 5 feeds</strong>. We are running on a free cloud server hosting... so let's spare resources for the moment.</p></div></td>
+		    </tr>
+		#{/else}
+		</table>
+		#{/form}
+		
+	#{/if}
+	#{else}
+        <table>
+        <thead>
+            <tr>
+              <th>Actions</th>
+              <th>Title</th>
+              <th>Feed Url</th>
+            </tr>
+        </thead>
+	           <tr>
+                <td><input type="submit" value="add" class="btn primary" disabled="disabled"/></td>
+                <td>
+                      <input type="text" disabled="disabled">
+                </td>
+                <td>
+                      <input type="text" class="xlarge" disabled="disabled">
+                </td>
+            </tr>
+            <tfoot><tr><th colspan ="3" class="alert-message warning">You have to #{a @Application.authenticate("https://www.google.com/accounts/o8/id")}login with Google#{/a} in order to add your own feeds.</th></tr></tfoot>
+    </table>
+	#{/else}
+	<p>Here are sample ePubs instantly generated from various popular RSS feeds:
+	<ul>
+		#{list items:sampleFeeds, as:'sample'}		
+		<li>#{a @Application.downloadSample(sample.title)}${sample.title}#{/a}</li>
+		#{/list}
+	</ul>
+
+</div>
+</div>

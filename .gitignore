@@ -1,0 +1,11 @@
+/eclipse
+/tmp
+/modules
+/lib
+/test-result
+/logs
+/precompiled
+.classpath
+.project
+.settings/*
+*.sublime-workspace
